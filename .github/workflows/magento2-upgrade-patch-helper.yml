@@ -4,11 +4,12 @@ on:
   pull_request:
     types: [labeled]
 
-# TODO work out permissions granularity
-
 jobs:
   upgrade-patch-helper:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
 
       - name: Check if label is "RunUpgradePatchHelper" [SHOULD_RUN=???]
