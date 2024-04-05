@@ -12,6 +12,9 @@ jobs:
   upgrade-patch-helper:
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Additional SHOULD_RUN check [SHOULD_RUN=yes]
         if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
@@ -25,6 +28,7 @@ jobs:
         run: |
           /usr/bin/docker run --name magento2upgradepatchhelpergithubaction --workdir /github/workspace --rm -e WORKING_DIRECTORY=${{ inputs.working-dir }} -e GITHUB_ACTIONS=true -e CI=true -e "GITHUB_RUN_ID" -e "GITHUB_REPOSITORY" -e "GITHUB_SERVER_URL" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -v "$(pwd)":"/github/workspace" convenient/magento2-upgrade-patch-helper-github-action:RunPatchHelperV1
         # Run image manually so that the pull of the large docker image is delayed, pass over the necessary variables
+        # TODO fully tag docker images
 
       - name: Upload vendor_files_to_check.patch [SHOULD_RUN=yes]
         if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
