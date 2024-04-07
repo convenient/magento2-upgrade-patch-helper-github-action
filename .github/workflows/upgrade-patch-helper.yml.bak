@@ -3,9 +3,12 @@ on:
     inputs:
       working-dir:
         required: true
+        description: "The current working directory, defaults to '.'"
+        default: "."
         type: string
       vendor-filter:
         required: false
+        description: "Pipe separated list of vendors that will not trigger the helper"
         type: string
 
 jobs:

@@ -11,12 +11,8 @@ jobs:
       pull-requests: write
     steps:
 
-      - name: Check if label is "RunUpgradePatchHelper" [SHOULD_RUN=???]
+      - name: Remove RunUpgradePatchHelper Label
         if: github.event.label.name == 'RunUpgradePatchHelper'
-        run: echo "SHOULD_RUN_UPGRADE_HELPER=yes" >> "$GITHUB_ENV"
-
-      - name: Remove Label [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
         uses: actions/github-script@v7
         with:
           script: |
@@ -27,8 +23,8 @@ jobs:
               name: 'RunUpgradePatchHelper'
             });
 
-      - name: Checkout repository [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
+      - name: Checkout repository
+        if: github.event.label.name == 'RunUpgradePatchHelper'
         uses: actions/checkout@v4
 
 #      - name: Generate auth.json, uncomment and configure when needed
@@ -39,9 +35,9 @@ jobs:
 #        run: |
 #          printf '{\n    "http-basic": {\n        "repo.packagist.com": {\n            "username": "${USERNAME}",\n            "password": "${PASSWORD}"\n        }\n    }\n}' > auth.json
 
-      - name: Run upgrade patch helper [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
+      - name: Run magento2 upgrade patch helper
+        if: github.event.label.name == 'RunUpgradePatchHelper'
         uses: convenient/magento2-upgrade-patch-helper-github-action@wip-action
         with:
-          working-dir: './some_subdir'
+          working-dir: 'some_subdir'
           vendor-filter: 'foobar|baz'
