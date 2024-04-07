@@ -71,10 +71,10 @@ $output .= getWarnCount($lines) . PHP_EOL;
 $output .= getInfoCount($lines) . PHP_EOL . PHP_EOL;
 $output .= "Navigate to download [vendor_files_to_check.patch](" . getenv('CURRENT_RUN_URL') . ")" . PHP_EOL;
 $output .= "Github action powered by [convenient/magento2-upgrade-patch-helper-github-action](https://github.com/convenient/magento2-upgrade-patch-helper-github-action)" . PHP_EOL;
-$output .= "For docs on each check see [CHECKS_AVAILABLE.md](https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper/blob/master/docs/CHECKS_AVAILABLE.md)" . PHP_EOL . PHP_EOL;
+$output .= "For docs on each check see [CHECKS_AVAILABLE.md](" . getenv('REPO_URL') . "/blob/master/docs/CHECKS_AVAILABLE.md)" . PHP_EOL . PHP_EOL;
 $output .= "<details>" . PHP_EOL .
-    "<summary>metadata</summary>" .
-    'upgrade_patch_helper_metadata_do_not_reproduce_this_string_in_another_comment_or_it_will_confuse_matters' . PHP_EOL .
+    "<summary>metadata</summary>" . PHP_EOL . PHP_EOL .
+    'upgrade_patch_helper_metadata_do_not_reproduce_this_string_in_another_comment_or_it_will_confuse_matters' . PHP_EOL . PHP_EOL .
     'BRANCH_TO:' . getenv('GITHUB_HEAD_REF') . PHP_EOL  .  PHP_EOL.
     'BRANCH_FROM:' . getenv('GITHUB_BASE_REF') . PHP_EOL . PHP_EOL .
     "</details>"

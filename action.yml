@@ -2,26 +2,31 @@ name: 'Magento2 Upgrade Patch Helper'
 description: 'Run the Magento2 Upgrade Patch Helper'
 inputs:
   working-dir:
-    required: true
     description: "The current working directory, defaults to '.'"
+    required: true
     default: "."
     type: string
   vendor-filter:
-    required: false
     description: "Pipe separated list of vendors that will not trigger the helper"
+    required: false
     type: string
   upload-vendor-directories:
-    description: "Flag on whether to upload vendor and vendor_orig artifacts"
+    description: "Flag whether to upload vendor and vendor_orig artifacts"
     type: boolean
     required: false
     default: false
+  upgrade-patch-helper-github-url:
+    description: "The location of the magento2-upgrade-patch-helper tool"
+    type: string
+    required: true
+    default: 'https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper'
 
 runs:
   using: "composite"
   steps:
 
     - name: Check if SHOULD_RUN_UPGRADE_HELPER
-      uses: docker://convenient/magento2-upgrade-patch-helper-github-action:shouldWeRunV1
+      uses: docker://convenient/magento2-upgrade-patch-helper-github-action:should-we-execute-2024-04-07
       env:
         WORKING_DIRECTORY: ${{ inputs.working-dir }}
         VENDOR_FILTER: ${{ inputs.vendor-filter }}
@@ -43,9 +48,8 @@ runs:
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
       shell: bash
       run: |
-        /usr/bin/docker run --name magento2upgradepatchhelpergithubaction --workdir /github/workspace --rm -e WORKING_DIRECTORY=${{ inputs.working-dir }} -e GITHUB_ACTIONS=true -e CI=true -e "GITHUB_RUN_ID" -e "GITHUB_REPOSITORY" -e "GITHUB_SERVER_URL" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -v "$(pwd)":"/github/workspace" convenient/magento2-upgrade-patch-helper-github-action:RunPatchHelperV1
+        /usr/bin/docker run --name magento2upgradepatchhelpergithubaction --workdir /github/workspace --rm -e REPO_URL=${{ inputs.upgrade-patch-helper-github-url }} -e WORKING_DIRECTORY=${{ inputs.working-dir }} -e GITHUB_ACTIONS=true -e CI=true -e "GITHUB_RUN_ID" -e "GITHUB_REPOSITORY" -e "GITHUB_SERVER_URL" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -v "$(pwd)":"/github/workspace" convenient/magento2-upgrade-patch-helper-github-action:upgrade-patch-helper-2024-04-07
       # Run image manually so that the pull of the large docker image is delayed or skipped when not required, pass over the necessary variables
-      # TODO fully tag docker images
 
     - name: Upload vendor_files_to_check.patch [SHOULD_RUN=yes]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
@@ -72,7 +76,7 @@ runs:
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
       shell: bash
       run: |
-        tar -czvf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor ./${{ inputs.working-dir }}/vendor_orig
+        tar -czf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor ./${{ inputs.working-dir }}/vendor_orig
 
     - name: Upload vendor and vendor_orig [SHOULD_RUN=yes]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}

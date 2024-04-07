@@ -10,3 +10,4 @@ Need to add instructions and examples
 
 
 # TODO php 7.3 and other versions 
+# todo LICENSE.md

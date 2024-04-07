@@ -50,7 +50,7 @@ prerequisites() {
 install_patch_helper() {
     mkdir /patch-helper/
     cd /patch-helper/
-    wget https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper/archive/master.zip
+    wget "$REPO_URL/archive/master.zip"
     unzip -q master.zip
     cd ampersand-magento2-upgrade-patch-helper-master
     composer2 install --no-dev --no-interaction
