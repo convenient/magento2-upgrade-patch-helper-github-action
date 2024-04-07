@@ -10,8 +10,8 @@ inputs:
     description: "Pipe separated list of vendors that will not trigger the tool"
     required: false
     type: string
-  upload-vendor-directories:
-    description: "Flag whether to upload vendor and vendor_orig artifacts"
+  with-gui-artifacts:
+    description: "Set this flag to upload artifacts for https://github.com/elgentos/magento2-upgrade-gui"
     type: boolean
     required: true
     default: false
@@ -66,20 +66,20 @@ runs:
         path: ./${{ inputs.working-dir }}/patch-helper-output.txt
 
     - name: Upload classmap.json [SHOULD_RUN=yes]
-      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: classmap.json
         path: ./${{ inputs.working-dir }}/classmap.json
 
     - name: Prepare vendor and vendor_orig for upload [SHOULD_RUN=yes]
-      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.upload-vendor-directories == 'true' }}
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
       shell: bash
       run: |
         tar -czf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor ./${{ inputs.working-dir }}/vendor_orig
 
     - name: Upload vendor and vendor_orig [SHOULD_RUN=yes]
-      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.upload-vendor-directories == 'true' }}
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: vendor

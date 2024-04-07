@@ -6,8 +6,6 @@ err_report() {
 }
 trap 'err_report $LINENO' ERR
 export GITHUB_WORKSPACE='/github/workspace'; # because we're manually handling these for deferred pulling of the image
-export COMPOSER_NPM_BRIDGE_DISABLE=1
-export COMPOSER_PATCHES_GRACEFUL=true
 # TODO alter -VVV running to stderr so we can capture it separately in the logs
 
 change_to_magento_directory() {
@@ -39,6 +37,15 @@ prerequisites() {
     fi
 
     export COMPOSER_MEMORY_LIMIT=4G
+    export COMPOSER_NPM_BRIDGE_DISABLE=1
+    export COMPOSER_PATCHES_GRACEFUL=true
+
+    for ini in /root/.phpenv/versions/*/etc/conf.d/xdebug.ini
+    do
+      [[ -e "$ini" ]] || break
+      mv "$ini" "$ini.bak"
+    done
+
     export PATH="/root/.phpenv/bin:$PATH"
     ln -s -f /root/.phpenv/versions/8.3.3/bin/php /root/.phpenv/bin/php
     which php
