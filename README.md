@@ -94,7 +94,7 @@ jobs:
         uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
 ```
 
-### Triggered by a opened pull request
+### Triggered by an opened pull request
 
 If you would like this tool to run on every pull request that touches `composer.lock` you can configure it like so.
 
