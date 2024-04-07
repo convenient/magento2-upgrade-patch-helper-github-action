@@ -10,6 +10,12 @@ inputs:
     required: false
     description: "Pipe separated list of vendors that will not trigger the helper"
     type: string
+  upload-vendor-directories:
+    description: "Flag on whether to upload vendor and vendor_orig artifacts"
+    type: boolean
+    required: false
+    default: false
+
 runs:
   using: "composite"
   steps:
@@ -61,6 +67,20 @@ runs:
       with:
         name: classmap.json
         path: ./${{ inputs.working-dir }}/classmap.json
+
+    - name: Upload vendor [SHOULD_RUN=yes]
+      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: vendor
+        path: ./${{ inputs.working-dir }}/vendor
+
+    - name: Upload vendor_orig [SHOULD_RUN=yes]
+      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: vendor_orig
+        path: ./${{ inputs.working-dir }}/vendor_orig
 
     - name: Create or update PR comment [SHOULD_RUN=yes]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
