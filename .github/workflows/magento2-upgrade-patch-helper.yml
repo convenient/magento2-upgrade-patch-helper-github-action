@@ -5,19 +5,14 @@ on:
     types: [labeled]
 
 jobs:
-  upgrade-patch-helper:
+  magento2-upgrade-patch-helper:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       pull-requests: write
     steps:
 
-      - name: Check if label is "RunUpgradePatchHelper" [SHOULD_RUN=???]
+      - name: Remove RunUpgradePatchHelper Label
         if: github.event.label.name == 'RunUpgradePatchHelper'
-        run: echo "SHOULD_RUN_UPGRADE_HELPER=yes" >> "$GITHUB_ENV"
-
-      - name: Remove Label [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
         uses: actions/github-script@v7
         with:
           script: |
@@ -28,101 +23,10 @@ jobs:
               name: 'RunUpgradePatchHelper'
             });
 
-      - name: Checkout repository [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
+      - name: Checkout repository
+        if: github.event.label.name == 'RunUpgradePatchHelper'
         uses: actions/checkout@v4
 
-      - name: Additional SHOULD_RUN check [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-        uses: docker://convenient/magento2-upgrade-patch-helper-github-action:shouldWeRunV1
-        env:
-          VENDOR_FILTER: 'foobar|baz'
-
-      #      - name: Generate auth.json, uncomment and configure when needed
-      #        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-      #        env:
-      #          USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
-      #          PASSWORD: ${{ secrets.PACKAGIST_PASSWORD }}
-      #        run: |
-      #          printf '{\n    "http-basic": {\n        "repo.packagist.com": {\n            "username": "${USERNAME}",\n            "password": "${PASSWORD}"\n        }\n    }\n}' > auth.json
-
-      - name: Run upgrade patch helper [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-        run: |
-          /usr/bin/docker run --name magento2upgradepatchhelpergithubaction --workdir /github/workspace --rm -e GITHUB_ACTIONS=true -e CI=true -e "GITHUB_RUN_ID" -e "GITHUB_REPOSITORY" -e "GITHUB_SERVER_URL" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -v "$(pwd)":"/github/workspace" convenient/magento2-upgrade-patch-helper-github-action:RunPatchHelperV1
-        # Run image manually so that the pull of the large docker image is delayed, pass over the necessary variables
-
-      - name: Upload vendor_files_to_check.patch [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-        uses: actions/upload-artifact@v4
-        with:
-          name: vendor_files_to_check.patch
-          path: ./vendor_files_to_check.patch
-
-      - name: Upload patch-helper-output.txt [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-        uses: actions/upload-artifact@v4
-        with:
-          name: patch-helper-output.txt
-          path: ./patch-helper-output.txt
-
-      - name: Upload classmap.json [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-        uses: actions/upload-artifact@v4
-        with:
-          name: classmap.json
-          path: ./classmap.json
-
-      - name: Create or update PR comment [SHOULD_RUN=yes]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            // Get the existing comments.
-            const {data: comments} = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.number,
-            })
-
-            const searchString = "upgrade_patch_helper_metadata_do_not_reproduce_this_string_in_another_comment_or_it_will_confuse_matters";
-            const commentWithSubstring = comments.find(comment => comment.body.includes(searchString));
-            if (commentWithSubstring) {
-              console.log('Updating previous comment with output');
-              const fs = require('fs');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: fs.readFileSync('./output-see-previous-comment.md', 'utf8')
-              });
-              github.rest.issues.updateComment({
-                comment_id: commentWithSubstring.id,
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: fs.readFileSync('./patch-helper-output-formatted.md', 'utf8')
-              });
-            } else {
-              console.log('Creating new comment');
-              const fs = require('fs');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: fs.readFileSync('./patch-helper-output-formatted.md', 'utf8')
-              });
-            }
-
-      - name: Comment on pull request [SHOULD_RUN=no]
-        if: env.SHOULD_RUN_UPGRADE_HELPER == 'no'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: fs.readFileSync('./output-not-needed.md', 'utf8')
-            });
+      - name: Run magento2 upgrade patch helper
+        if: github.event.label.name == 'RunUpgradePatchHelper'
+        uses: convenient/magento2-upgrade-patch-helper-github-action@main
