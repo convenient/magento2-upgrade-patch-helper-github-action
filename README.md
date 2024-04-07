@@ -105,7 +105,7 @@ on:
   pull_request:
     paths:
       - 'composer.lock'
-    types: [opened, synchronize]
+    types: [opened]
 
 jobs:
   magento2-upgrade-patch-helper:
