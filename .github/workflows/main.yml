@@ -38,6 +38,3 @@ jobs:
       - name: Run magento2 upgrade patch helper
         if: github.event.label.name == 'RunUpgradePatchHelper'
         uses: convenient/magento2-upgrade-patch-helper-github-action@wip-action
-        with:
-          working-dir: 'some_subdir'
-          vendor-filter: 'foobar|baz'
