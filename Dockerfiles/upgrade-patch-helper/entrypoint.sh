@@ -6,8 +6,6 @@ err_report() {
 }
 trap 'err_report $LINENO' ERR
 export GITHUB_WORKSPACE='/github/workspace'; # because we're manually handling these for deferred pulling of the image
-export COMPOSER_NPM_BRIDGE_DISABLE=1
-export COMPOSER_PATCHES_GRACEFUL=true
 # TODO alter -VVV running to stderr so we can capture it separately in the logs
 
 change_to_magento_directory() {
@@ -21,7 +19,7 @@ change_to_magento_directory() {
 }
 
 prerequisites() {
-    # This expects that the ShouldWeRun dockerfile has executed already, as that configures some git repo prerequisites
+    # This expects that the should-we-execute dockerfile has executed already, as that configures some git repo prerequisites
     cd "$GITHUB_WORKSPACE"
 
     git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -39,6 +37,15 @@ prerequisites() {
     fi
 
     export COMPOSER_MEMORY_LIMIT=4G
+    export COMPOSER_NPM_BRIDGE_DISABLE=1
+    export COMPOSER_PATCHES_GRACEFUL=true
+
+    for ini in /root/.phpenv/versions/*/etc/conf.d/xdebug.ini
+    do
+      [[ -e "$ini" ]] || break
+      mv "$ini" "$ini.bak"
+    done
+
     export PATH="/root/.phpenv/bin:$PATH"
     ln -s -f /root/.phpenv/versions/8.3.3/bin/php /root/.phpenv/bin/php
     which php
@@ -50,7 +57,7 @@ prerequisites() {
 install_patch_helper() {
     mkdir /patch-helper/
     cd /patch-helper/
-    wget https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper/archive/master.zip
+    wget "$REPO_URL/archive/master.zip"
     unzip -q master.zip
     cd ampersand-magento2-upgrade-patch-helper-master
     composer2 install --no-dev --no-interaction
@@ -61,7 +68,20 @@ generate_vendor_orig() {
     change_to_magento_directory;
     git checkout "$GITHUB_BASE_REF"
     pick_php_and_composer
-    $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs
+
+    if [ -z "${PHP_SECONDARY-}" ]; then
+        $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs
+    else
+        if $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs; then
+          echo "COMPOSER_INSTALL_WITH_PHP_PRIMARY=PASS"
+        elif rm -rf vendor && ln -s -f /root/.phpenv/versions/"$PHP_SECONDARY"/bin/php /root/.phpenv/bin/php && $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs; then
+          echo "COMPOSER_INSTALL_WITH_PHP_SECONDARY=PASS"
+        else
+          echo "COMPOSER_INSTALL_WITH_PHP_SECONDARY=FAIL"
+          false
+        fi
+    fi
+
     mv vendor/ vendor_orig/
 }
 
