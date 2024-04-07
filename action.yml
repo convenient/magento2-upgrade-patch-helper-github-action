@@ -4,7 +4,7 @@ inputs:
   working-dir:
     description: "The current working directory, defaults to '.'"
     required: true
-    default: "."
+    default: ""
     type: string
   vendor-filter:
     description: "Pipe separated list of vendors that will not trigger the tool"
