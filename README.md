@@ -120,6 +120,3 @@ jobs:
       - name: Run magento2 upgrade patch helper
         uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
 ```
-
-
-# TODO add images
