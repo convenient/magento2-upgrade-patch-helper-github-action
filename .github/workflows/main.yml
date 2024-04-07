@@ -41,4 +41,3 @@ jobs:
         with:
           working-dir: 'some_subdir'
           vendor-filter: 'foobar|baz'
-          upload-vendor-directories: true

@@ -16,7 +16,7 @@ inputs:
     required: true
     default: false
   upgrade-patch-helper-github-url:
-    description: "The location of the magento2-upgrade-patch-helper tool"
+    description: "The location of the magento2-upgrade-patch-helper tool (without a trailing slash)"
     type: string
     required: true
     default: 'https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper'
@@ -30,20 +30,6 @@ runs:
       env:
         WORKING_DIRECTORY: ${{ inputs.working-dir }}
         VENDOR_FILTER: ${{ inputs.vendor-filter }}
-
-
-    - name: Prepare vendor and vendor_orig for upload [SHOULD_RUN=yes]
-      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.upload-vendor-directories == 'true' }}
-      shell: bash
-      run: |
-        echo "Condition is hitting"
-
-
-    - name: Fail fast
-      shell: bash
-      run: |
-        false
-        asdfsadfasf;
 
     - name: Comment on pull request [SHOULD_RUN=no]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'no'
