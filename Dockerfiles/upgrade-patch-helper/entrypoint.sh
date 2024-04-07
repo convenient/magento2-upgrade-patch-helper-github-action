@@ -21,7 +21,7 @@ change_to_magento_directory() {
 }
 
 prerequisites() {
-    # This expects that the ShouldWeRun dockerfile has executed already, as that configures some git repo prerequisites
+    # This expects that the should-we-execute dockerfile has executed already, as that configures some git repo prerequisites
     cd "$GITHUB_WORKSPACE"
 
     git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -61,7 +61,20 @@ generate_vendor_orig() {
     change_to_magento_directory;
     git checkout "$GITHUB_BASE_REF"
     pick_php_and_composer
-    $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs
+
+    if [ -z "${PHP_SECONDARY-}" ]; then
+        $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs
+    else
+        if $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs; then
+          echo "COMPOSER_INSTALL_WITH_PHP_PRIMARY=PASS"
+        elif rm -rf vendor && ln -s -f /root/.phpenv/versions/"$PHP_SECONDARY"/bin/php /root/.phpenv/bin/php && $COMPOSER_VERS install --no-interaction --no-scripts --no-plugins --ignore-platform-reqs; then
+          echo "COMPOSER_INSTALL_WITH_PHP_SECONDARY=PASS"
+        else
+          echo "COMPOSER_INSTALL_WITH_PHP_SECONDARY=FAIL"
+          false
+        fi
+    fi
+
     mv vendor/ vendor_orig/
 }
 

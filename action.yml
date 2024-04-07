@@ -7,7 +7,7 @@ inputs:
     default: "."
     type: string
   vendor-filter:
-    description: "Pipe separated list of vendors that will not trigger the helper"
+    description: "Pipe separated list of vendors that will not trigger the tool"
     required: false
     type: string
   upload-vendor-directories:
