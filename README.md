@@ -6,6 +6,10 @@ This will give you an actionable list of things to review when upgrading a Magen
 
 For example, if you have overridden theme files which need to be updated based on the new `vendor/some/module/file.phtml` then this will be listed in the report.
 
+## Example output
+
+![Screenshot 2024-04-07 at 15 52 09](https://github.com/convenient/magento2-upgrade-patch-helper-github-action/assets/600190/c8a44603-a8d3-4e18-acad-63cc9c6ded43)
+
 ## Prerequisites
 
 ### Frontend themes 
