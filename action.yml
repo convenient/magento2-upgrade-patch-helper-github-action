@@ -13,7 +13,7 @@ inputs:
   upload-vendor-directories:
     description: "Flag whether to upload vendor and vendor_orig artifacts"
     type: boolean
-    required: false
+    required: true
     default: false
   upgrade-patch-helper-github-url:
     description: "The location of the magento2-upgrade-patch-helper tool"
@@ -30,6 +30,20 @@ runs:
       env:
         WORKING_DIRECTORY: ${{ inputs.working-dir }}
         VENDOR_FILTER: ${{ inputs.vendor-filter }}
+
+
+    - name: Prepare vendor and vendor_orig for upload [SHOULD_RUN=yes]
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.upload-vendor-directories == 'true' }}
+      shell: bash
+      run: |
+        echo "Condition is hitting"
+
+
+    - name: Fail fast
+      shell: bash
+      run: |
+        false
+        asdfsadfasf;
 
     - name: Comment on pull request [SHOULD_RUN=no]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'no'
@@ -73,13 +87,13 @@ runs:
         path: ./${{ inputs.working-dir }}/classmap.json
 
     - name: Prepare vendor and vendor_orig for upload [SHOULD_RUN=yes]
-      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.upload-vendor-directories == 'true' }}
       shell: bash
       run: |
         tar -czf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor ./${{ inputs.working-dir }}/vendor_orig
 
     - name: Upload vendor and vendor_orig [SHOULD_RUN=yes]
-      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.upload-vendor-directories == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: vendor
