@@ -3,7 +3,7 @@ name: Magento2 Upgrade Patch Helper
 on:
   pull_request:
     paths:
-      - 'composer.lock'
+      - 'some_subdir/composer.lock'
     types: [opened, synchronize]
 
 jobs:
