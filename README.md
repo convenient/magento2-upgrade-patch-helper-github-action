@@ -2,7 +2,9 @@
 
 This github action handles the running of https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper
 
-This will give you an actionable list of things to review when upgrading a Magento instance, or a magento module/library/theme. For example, if you have overridden theme files which need to be updated based on the new `vendor/some/module/file.phtml` then this will be listed in the report.
+This will give you an actionable list of things to review when upgrading a Magento instance, or a magento module/library/theme. 
+
+For example, if you have overridden theme files which need to be updated based on the new `vendor/some/module/file.phtml` then this will be listed in the report.
 
 ## Prerequisites
 
@@ -33,41 +35,18 @@ Prior to running this action ensure an `auth.json` has been created, for example
       uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
 ```
 
-## Configuration
-
- 
-```
-inputs:
-  working-dir:
-    description: "The current working directory, defaults to '.'"
-    required: true
-    default: ""
-    type: string
-  vendor-filter:
-    description: "Pipe separated list of vendors that will not trigger the tool"
-    required: false
-    type: string
-  with-gui-artifacts:
-    description: "Set this flag to upload artifacts for https://github.com/elgentos/magento2-upgrade-gui"
-    type: boolean
-    required: true
-    default: false
-  upgrade-patch-helper-github-url:
-    description: "The location of the magento2-upgrade-patch-helper tool (without a trailing slash)"
-    type: string
-    required: true
-    default: 'https://github.com/AmpersandHQ/ampersand-magento2-upgrade-patch-helper'
-```
-
 # Configuration
 
 ```yml
   - name: Run magento2 upgrade patch helper
     uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
     with:
-      with-gui-artifacts: true                  # Optional: artifacts for https://github.com/elgentos/magento2-upgrade-gui
-      working-dir: 'some_subdir'                # Optional: The subdirectory Magento is stored in
-      vendor-filter: 'some/package|some_vendor' # Optional: Pipe separated list of vendors that will not trigger the tool
+      # Optional: Upload artifacts for use with https://github.com/elgentos/magento2-upgrade-gui
+      with-gui-artifacts: true
+      # Optional: The subdirectory Magento is stored in                  
+      working-dir: 'some_subdir'                
+      # Optional: Pipe separated list of vendors that will not trigger the tool
+      vendor-filter: 'some/package|some_vendor' 
 ```
 
 ## Examples
