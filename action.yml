@@ -44,7 +44,7 @@ runs:
       shell: bash
       run: |
         /usr/bin/docker run --name magento2upgradepatchhelpergithubaction --workdir /github/workspace --rm -e WORKING_DIRECTORY=${{ inputs.working-dir }} -e GITHUB_ACTIONS=true -e CI=true -e "GITHUB_RUN_ID" -e "GITHUB_REPOSITORY" -e "GITHUB_SERVER_URL" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -v "$(pwd)":"/github/workspace" convenient/magento2-upgrade-patch-helper-github-action:RunPatchHelperV1
-      # Run image manually so that the pull of the large docker image is delayed, pass over the necessary variables
+      # Run image manually so that the pull of the large docker image is delayed or skipped when not required, pass over the necessary variables
       # TODO fully tag docker images
 
     - name: Upload vendor_files_to_check.patch [SHOULD_RUN=yes]
@@ -68,19 +68,18 @@ runs:
         name: classmap.json
         path: ./${{ inputs.working-dir }}/classmap.json
 
-    - name: Upload vendor [SHOULD_RUN=yes]
+    - name: Prepare vendor and vendor_orig for upload [SHOULD_RUN=yes]
+      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
+      shell: bash
+      run: |
+        tar -czvf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor ./${{ inputs.working-dir }}/vendor_orig
+
+    - name: Upload vendor and vendor_orig [SHOULD_RUN=yes]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: vendor
-        path: ./${{ inputs.working-dir }}/vendor
-
-    - name: Upload vendor_orig [SHOULD_RUN=yes]
-      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && ${{ inputs.upload-vendor-directories == 'true' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: vendor_orig
-        path: ./${{ inputs.working-dir }}/vendor_orig
+        path: ./${{ inputs.working-dir }}/vendorarchive.tar.gz
 
     - name: Create or update PR comment [SHOULD_RUN=yes]
       if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
