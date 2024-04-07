@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 jobs:
-  upgrade-patch-helper:
+  magento2-upgrade-patch-helper:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
