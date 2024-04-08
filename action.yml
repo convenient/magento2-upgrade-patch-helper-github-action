@@ -82,17 +82,24 @@ runs:
         name: classmap.json
         path: ./${{ inputs.working-dir }}/classmap.json
 
-    - name: Prepare vendor and vendor_orig for upload [SHOULD_RUN=yes]
-      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
-      shell: bash
-      run: |
-        tar -czf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor ./${{ inputs.working-dir }}/vendor_orig
-
-    - name: Upload vendor and vendor_orig [SHOULD_RUN=yes]
+    - name: Upload vendor.patch [SHOULD_RUN=yes]
       if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
       uses: actions/upload-artifact@v4
       with:
-        name: vendor
+        name: vendor.patch
+        path: ./${{ inputs.working-dir }}/vendor.patch
+
+    - name: Prepare vendor for upload [SHOULD_RUN=yes]
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
+      shell: bash
+      run: |
+        tar -czf ./${{ inputs.working-dir }}/vendorarchive.tar.gz ./${{ inputs.working-dir }}/vendor
+
+    - name: Upload vendor [SHOULD_RUN=yes]
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.with-gui-artifacts == 'true' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: vendor.tar.gz
         path: ./${{ inputs.working-dir }}/vendorarchive.tar.gz
 
     - name: Create or update PR comment [SHOULD_RUN=yes]
