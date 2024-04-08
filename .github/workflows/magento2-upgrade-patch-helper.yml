@@ -19,4 +19,4 @@ jobs:
       - name: Run magento2 upgrade patch helper
         uses: convenient/magento2-upgrade-patch-helper-github-action@feature-pr-comments-togglable
         with:
-          pr-comment-when-nothing-to-scan: false
+          pr-comment-when-nothing-to-scan: true
