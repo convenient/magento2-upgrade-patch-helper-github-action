@@ -51,6 +51,10 @@ Prior to running this action ensure an `auth.json` has been created, for example
       working-dir: 'some_subdir'                
       # Optional: Pipe separated list of vendors that will not trigger the tool
       vendor-filter: 'some/package|some_vendor' 
+      # Optional: Add a pull request comment when the tool has been triggered, but there's nothing changed to scan
+      pr-comment-when-nothing-to-scan: true
+      # Optional: You can disable the pull request comment when the tool is completed, the only output are the artifacts
+      pr-comment-when-completed: false
 ```
 
 ## Examples

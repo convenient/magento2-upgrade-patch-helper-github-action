@@ -15,6 +15,16 @@ inputs:
     type: boolean
     required: true
     default: false
+  pr-comment-when-nothing-to-scan:
+    description: "When set to true a comment will be added to the PR when there are no magento2 dependencies to scan"
+    type: boolean
+    required: true
+    default: false
+  pr-comment-when-completed:
+    description: "When set to true a comment will be added to the PR with a summary of the output"
+    type: boolean
+    required: true
+    default: true
   upgrade-patch-helper-github-url:
     description: "The location of the magento2-upgrade-patch-helper tool (without a trailing slash)"
     type: string
@@ -32,7 +42,7 @@ runs:
         VENDOR_FILTER: ${{ inputs.vendor-filter }}
 
     - name: Comment on pull request [SHOULD_RUN=no]
-      if: env.SHOULD_RUN_UPGRADE_HELPER == 'no'
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'no' && inputs.pr-comment-when-nothing-to-scan == 'true' }}
       uses: actions/github-script@v7
       with:
         script: |
@@ -86,7 +96,7 @@ runs:
         path: ./${{ inputs.working-dir }}/vendorarchive.tar.gz
 
     - name: Create or update PR comment [SHOULD_RUN=yes]
-      if: env.SHOULD_RUN_UPGRADE_HELPER == 'yes'
+      if: ${{  env.SHOULD_RUN_UPGRADE_HELPER == 'yes' && inputs.pr-comment-when-completed == 'true' }}
       uses: actions/github-script@v7
       with:
         script: |
