@@ -36,14 +36,14 @@ Prior to running this action ensure an `auth.json` has been created, for example
 +       printf '{\n    "http-basic": {\n        "repo.packagist.com": {\n            "username": "${USERNAME}",\n            "password": "${PASSWORD}"\n        }\n    }\n}' > auth.json
 
     - name: Run magento2 upgrade patch helper
-      uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
+      uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.1
 ```
 
 # Configuration
 
 ```yml
   - name: Run magento2 upgrade patch helper
-    uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
+    uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.1
     with:
       # Optional: Upload artifacts for use with https://github.com/elgentos/magento2-upgrade-gui
       with-gui-artifacts: true
@@ -51,6 +51,10 @@ Prior to running this action ensure an `auth.json` has been created, for example
       working-dir: 'some_subdir'                
       # Optional: Pipe separated list of vendors that will not trigger the tool
       vendor-filter: 'some/package|some_vendor' 
+      # Optional: Add a pull request comment when the tool has been triggered, but there's nothing changed to scan
+      pr-comment-when-nothing-to-scan: true
+      # Optional: You can disable the pull request comment when the tool is completed, the only output are the artifacts
+      pr-comment-when-completed: false
 ```
 
 ## Examples
@@ -91,7 +95,7 @@ jobs:
 
       - name: Run magento2 upgrade patch helper
         if: github.event.label.name == 'RunUpgradePatchHelper'
-        uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
+        uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.1
 ```
 
 ### Triggered by an opened pull request
@@ -118,5 +122,5 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run magento2 upgrade patch helper
-        uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
+        uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.1
 ```
