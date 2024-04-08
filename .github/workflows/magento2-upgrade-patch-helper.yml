@@ -17,4 +17,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run magento2 upgrade patch helper
-        uses: convenient/magento2-upgrade-patch-helper-github-action@1.0.0
+        uses: convenient/magento2-upgrade-patch-helper-github-action@feature-pr-comments-togglable
+        with:
+          pr-comment-when-nothing-to-scan: false
