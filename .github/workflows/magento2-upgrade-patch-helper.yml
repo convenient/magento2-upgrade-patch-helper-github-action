@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run magento2 upgrade patch helper
-        uses: convenient/magento2-upgrade-patch-helper-github-action@with-gui-artifacts
+        uses: convenient/magento2-upgrade-patch-helper-github-action@fix-gui-artifacts
         with:
           with-gui-artifacts: true
           working-dir: 'some_subdir'
