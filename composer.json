@@ -7,62 +7,74 @@
         "AFL-3.0"
     ],
     "config": {
-        "preferred-install": "dist",
-        "sort-packages": true,
         "allow-plugins": {
-            "magento/inventory-composer-installer": true,
-            "magento/magento-composer-installer": true
-        }
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "laminas/laminas-dependency-plugin": true,
+            "magento/*": true,
+            "php-http/discovery": true
+        },
+        "preferred-install": "dist",
+        "sort-packages": true
     },
+    "version": "2.4.6-p4",
     "require": {
-        "magento/product-community-edition": "2.3.0"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "~2.13.0",
-        "lusitanian/oauth": "~0.8.10",
-        "magento/magento2-functional-testing-framework": "2.3.9",
-        "pdepend/pdepend": "2.5.2",
-        "phpmd/phpmd": "@stable",
-        "phpunit/phpunit": "~6.5.0",
-        "sebastian/phpcpd": "~3.0.0",
-        "squizlabs/php_codesniffer": "3.3.1"
-    },
-    "conflict": {
-        "gene/bluefoot": "*"
+        "magento/product-community-edition": "2.4.6-p4",
+        "magento/composer-dependency-version-audit-plugin": "~0.1",
+        "magento/composer-root-update-plugin": "~2.0"
     },
     "autoload": {
-        "psr-4": {
-            "Magento\\Framework\\": "lib/internal/Magento/Framework/",
-            "Magento\\Setup\\": "setup/src/Magento/Setup/",
-            "Magento\\": "app/code/Magento/",
-            "Zend\\Mvc\\Controller\\": "setup/src/Zend/Mvc/Controller/"
-        },
+        "exclude-from-classmap": [
+            "**/dev/**",
+            "**/update/**",
+            "**/Test/**"
+        ],
+        "files": [
+            "app/etc/NonComposerComponentRegistration.php"
+        ],
         "psr-0": {
             "": [
                 "app/code/",
                 "generated/code/"
             ]
         },
-        "files": [
-            "app/etc/NonComposerComponentRegistration.php"
-        ],
-        "exclude-from-classmap": [
-            "**/dev/**",
-            "**/update/**",
-            "**/Test/**"
-        ]
+        "psr-4": {
+            "Magento\\": "app/code/Magento/",
+            "Magento\\Framework\\": "lib/internal/Magento/Framework/",
+            "Magento\\Setup\\": "setup/src/Magento/Setup/"
+        }
+    },
+    "require-dev": {
+        "allure-framework/allure-phpunit": "^2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+        "dg/bypass-finals": "^1.4",
+        "friendsofphp/php-cs-fixer": "^3.8",
+        "lusitanian/oauth": "^0.8",
+        "magento/magento-coding-standard": "*",
+        "magento/magento2-functional-testing-framework": "^4.3.1",
+        "pdepend/pdepend": "^2.10",
+        "phpmd/phpmd": "^2.12",
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^9.5",
+        "sebastian/comparator": "<=4.0.6",
+        "sebastian/phpcpd": "^6.0",
+        "symfony/finder": "^5.4",
+        "symfony/process": "<=v5.4.23"
+    },
+    "conflict": {
+        "gene/bluefoot": "*"
     },
     "autoload-dev": {
         "psr-4": {
+            "Magento\\PhpStan\\": "dev/tests/static/framework/Magento/PhpStan/",
             "Magento\\Sniffs\\": "dev/tests/static/framework/Magento/Sniffs/",
-            "Magento\\Tools\\": "dev/tools/Magento/Tools/",
-            "Magento\\Tools\\Sanity\\": "dev/build/publication/sanity/Magento/Tools/Sanity/",
             "Magento\\TestFramework\\Inspection\\": "dev/tests/static/framework/Magento/TestFramework/Inspection/",
-            "Magento\\TestFramework\\Utility\\": "dev/tests/static/framework/Magento/TestFramework/Utility/"
+            "Magento\\TestFramework\\Utility\\": "dev/tests/static/framework/Magento/TestFramework/Utility/",
+            "Magento\\Tools\\": "dev/tools/Magento/Tools/",
+            "Magento\\Tools\\Sanity\\": "dev/build/publication/sanity/Magento/Tools/Sanity/"
         }
     },
-    "version": "2.3.0",
     "minimum-stability": "stable",
+    "prefer-stable": true,
     "repositories": {
         "composerrepository": {
             "type": "composer",

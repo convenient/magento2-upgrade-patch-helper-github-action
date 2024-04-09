@@ -1,0 +1,20 @@
+name: Magento2 Upgrade Patch Helper
+
+on:
+  pull_request:
+    paths:
+      - 'composer.lock'
+    types: [opened, synchronize]
+
+jobs:
+  magento2-upgrade-patch-helper:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run magento2 upgrade patch helper
+        uses: convenient/magento2-upgrade-patch-helper-github-action@dont-install-with-patches
