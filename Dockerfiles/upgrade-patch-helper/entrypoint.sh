@@ -90,6 +90,10 @@ run_patch_helper() {
     git checkout "$GITHUB_HEAD_REF"
     pick_php_and_composer
 
+    echo "Disable composer patches, as vendor_orig is generated without plugins or scripts"
+    $COMPOSER_VERS config --no-interaction allow-plugins.cweagans/composer-patches false || true
+    $COMPOSER_VERS config --no-interaction allow-plugins.vaimo/composer-patches false    || true
+
     if [ -z "${PHP_SECONDARY-}" ]; then
         $COMPOSER_VERS install --no-interaction --ignore-platform-reqs
     else
