@@ -109,7 +109,7 @@ run_patch_helper() {
 
     # Diff them and generate a report
     diff -urN vendor_orig vendor > vendor.patch || true
-    patch-helper.php analyse --show-info --sort-by-type . | tee ./patch-helper-output.txt
+    php -d memory_limit=2G patch-helper.php analyse --show-info --sort-by-type . | tee ./patch-helper-output.txt
 
     if [[ ! -s "./patch-helper-output.txt" ]]; then
         echo "Error: ./patch-helper-output.txt is empty."
